@@ -59,7 +59,7 @@ bmiTell weight height
 max' :: (Ord a) => a -> a -> a
 max' a b
     | a <= b = b
-    | otherwise a
+    | otherwise = a
 
 -- compare
 myCompare :: (Ord a) => a -> a -> Ordering
