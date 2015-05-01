@@ -48,3 +48,23 @@ quicksort (x:xs) =
     let smallOrEquals = filter (<= x) xs
         large = filter (> x) xs
     in quicksort smallOrEquals ++ [x] ++ quicksort large
+
+largestDivisible :: Integer
+largestDivisible = head (filter p [100000,99999..])
+    where p x = x `mod` 3829 == 0
+
+sumFilteredList :: Integer
+sumFilteredList = sum (takeWhile (<10000) (filter odd (map (^2) [1..])))
+
+sumFilteredList' :: Integer
+sumFilteredList' = sum (takeWhile (<10000) [xs | x <- [1..], let xs = x ^ 2, odd xs])
+
+chain :: Integer -> [Integer]
+chain 1 = [1]
+chain n
+    | even n = n : chain (n `div` 2)
+    | odd n  = n : chain (n * 3 + 1)
+
+numLongChains :: Int
+numLongChains = length (filter isLong (map chain [1..100]))
+    where isLong xs = length xs > 15
