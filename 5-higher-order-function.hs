@@ -68,3 +68,58 @@ chain n
 numLongChains :: Int
 numLongChains = length (filter isLong (map chain [1..100]))
     where isLong xs = length xs > 15
+
+-- Using lambda
+numLongChains' :: Int
+numLongChains' = length (filter (\xs -> length xs > 15) (map chain [1..100]))
+
+
+sum' :: (Num a) => [a] -> a
+-- sum' xs = foldl (\acc x -> acc + x) 0 xs
+sum' = foldl (+) 0
+
+map'' :: (a -> b) -> [a] -> [b]
+map'' f xs = foldr (\x acc -> f x : acc) [] xs
+
+elem' :: (Eq a) => a -> [a] -> Bool
+elem' y ys = foldr (\x acc -> if x == y then True else acc) False ys
+
+maximum' :: (Ord a) => [a] -> a
+maximum' = foldl1 max
+
+reverse' :: [a] -> [a]
+-- reverse' = foldl (\acc x -> x : acc) []
+reverse' = foldl (flip (:)) []
+
+product' :: (Num a) => [a] -> a
+product' = foldl (*) 1
+
+filter'' :: (a -> Bool) -> [a] -> [a]
+filter'' p = foldr (\x acc -> if p x then x : acc else acc) []
+
+last' :: [a] -> a
+last' = foldl1 (\_ x -> x)
+
+and' :: [Bool] -> Bool
+and' xs = foldr (&&) True xs
+
+sqrtSums :: Int
+-- sqrtSums = length (takeWhile (<1000) (scanl1 (+) (map sqrt [1..]))) + 1
+sqrtSums = length (takeWhile (<1000) $ scanl1 (+) $ map sqrt [1..]) + 1
+
+-- Composite function
+main = do
+    putStrLn . show $ map (\xs -> negate (sum (tail xs))) [[1..5],[3..6],[1..7]]
+    putStrLn . show $ map (negate . sum . tail) [[1..5],[3..6],[1..7]]
+    putStrLn . show $ sum(replicate 5 (max 6.7 8.0))
+    putStrLn . show $ (sum . replicate 5) (max 6.7 8.0)
+    putStrLn . show $ sum . replicate 5 $ max 6.7 8.0
+    putStrLn . show $ replicate 2 (product (map (*3) (zipWith max [1,2] [4,5])))
+    putStrLn . show $ replicate 2 (product (map (*3) $ zipWith max [1,2] [4,5]))
+    putStrLn . show $ replicate 2 (product . map (*3) $ zipWith max [1,2] [4,5])
+    putStrLn . show $ replicate 2 . product . map (*3) $ zipWith max [1,2] [4,5]
+
+-- Point free style
+oddSquareSum :: Integer
+-- oddSquareSum = sum (takeWhile (<10000) (filter odd (map (^2) [1..])))
+oddSquareSum = sum . takeWhile (<10000) . filter odd $ map (^2) [1..]
