@@ -2,7 +2,7 @@ data Point = Point Float Float
 data Triangle = Triangle Point Point Point
 
 calcTriangleArea :: Triangle -> Float
-calcTriangleArea (Triangle (Point x y) (Point a b) (Point c d)) = ((a - x) * (d - y) - (b - y) * (c - x)) / 2
+calcTriangleArea (Triangle (Point x y) (Point a b) (Point c d)) = abs $ ((a - x) * (d - y) - (b - y) * (c - x)) / 2
 
 main = do
     putStrLn $ show $ calcTriangleArea $ Triangle (Point 0 0) (Point 0 5) (Point 5 0) -- 12.5
