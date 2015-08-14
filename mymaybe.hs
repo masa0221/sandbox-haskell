@@ -195,9 +195,9 @@ instance Monad MyMaybe where
 -- >>> MyNothing >>= (\x -> MyJust $ x + 2)
 -- MyNothing
 --
--- :set -XMonadComprehensions
--- [(x*y) | x <- MyJust 2, y <- MyJust 3]
+-- >>> :set -XMonadComprehensions
+-- >>> [x*y | x <- MyJust 2, y <- MyJust 3]
 -- MyJust 6
 --
--- [(x*y) | x <- MyJust 2, y <- MyNothing]
+-- >>> [(x*y) | x <- MyJust 2, y <- MyNothing]
 -- MyNothing
