@@ -153,21 +153,51 @@ catMaybes ((MyJust a):xs) = a : catMaybes xs
 
 -- 上級問題用
 instance Functor MyMaybe where
-  fmap = undefined
+  fmap _ MyNothing = MyNothing
+  fmap f (MyJust a) = MyJust $ f a
 
 instance Applicative MyMaybe where
-  pure = undefined
-  (<*>) = undefined
+  pure = MyJust
+  (<*>) MyNothing _ = MyNothing
+-- (<*>) (MyJust f) (MyJust a) = MyJust $ f a
+  (<*>) (MyJust f) a = fmap f a
 
 instance Monad MyMaybe where
-  (>>=) = undefined
+  (>>=) MyNothing _ = MyNothing
+  (>>=) (MyJust a) f = f a
   return = pure
 
 -- |
+-- >>> fmap (2*) (MyJust 1)
+-- MyJust 2
 --
--- >>> :set -XMonadComprehensions
--- >>> [(x*y) | x <- MyJust 2, y <- MyJust 3]
+-- >>> fmap (fmap (2*)) [MyJust 1, MyJust 2, MyJust 3, MyNothing, MyJust 4]
+-- [MyJust 2,MyJust 4,MyJust 6,MyNothing,MyJust 8]
+--
+-- >>> fmap (2*) MyNothing
+-- MyNothing
+--
+-- >>> pure 1 :: MyMaybe Int
+-- MyJust 1
+--
+-- >>> MyJust (*2) <*> MyJust 10
+-- MyJust 20
+--
+-- >>> MyNothing <*> MyJust 10
+-- MyNothing
+--
+-- >>> MyJust (*) <*> MyJust 10 <*> MyJust 5
+-- MyJust 50
+--
+-- >>> MyJust 3 >>= (\x -> MyJust $ x + 2)
+-- MyJust 5
+--
+-- >>> MyNothing >>= (\x -> MyJust $ x + 2)
+-- MyNothing
+--
+-- :set -XMonadComprehensions
+-- [(x*y) | x <- MyJust 2, y <- MyJust 3]
 -- MyJust 6
 --
--- >>> [(x*y) | x <- MyJust 2, y <- MyNothing]
+-- [(x*y) | x <- MyJust 2, y <- MyNothing]
 -- MyNothing
