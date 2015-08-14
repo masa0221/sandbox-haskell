@@ -22,6 +22,14 @@ data MyMaybe a = MyJust a | MyNothing deriving (Show)
 -- それぞれScalaではどのような名前のメソッドでしょうか
 -- 参考: http://www.scala-lang.org/api/current/index.html#scala.Option
 --
+-- isJust       :
+-- isNothing    : isEmpty
+-- fromMaybe    : getOrElse
+-- maybeToList  : toList
+-- listToMaybe  : 
+-- catMaybes    : flatten
+--
+--
 -- 上級
 -- MyMaybeを内包表記でつかえるようにしてください
 -- GHC拡張の設定が必要です。GHCiで使用する場合は
