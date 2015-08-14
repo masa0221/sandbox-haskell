@@ -50,7 +50,8 @@ main = undefined -- doctestの実行に必要なだけなので気にしない�
 -- "hoge"
 --
 maybe :: b -> (a -> b) -> MyMaybe a -> b
-maybe = undefined
+maybe b _ (MyNothing) = b
+maybe b f (MyJust a) = f a
 
 -- | isJust
 -- isJustは値がMyJustかどうか確認する関数です。
@@ -64,7 +65,8 @@ maybe = undefined
 -- >>> isJust (MyJust ())
 -- True
 isJust :: MyMaybe a -> Bool
-isJust = undefined
+isJust (MyJust _) = True
+isJust _ = False
 
 -- | isNothing
 -- isNothingtは値がMyNothingかどうか確認する関数です。
@@ -78,7 +80,9 @@ isJust = undefined
 -- >>> isNothing (MyJust ())
 -- False
 isNothing :: MyMaybe a -> Bool
-isNothing = undefined
+isNothing MyNothing = True
+isNothing _ = False
+
 
 -- | fromMaybe
 -- fromMaybeはMaybeをはずすための関数で、MyJustの時はMyJustを外した値を返し、
@@ -96,7 +100,8 @@ isNothing = undefined
 -- >>> fromMaybe 1 MyNothing
 -- 1
 fromMaybe :: a -> MyMaybe a -> a
-fromMaybe = undefined
+fromMaybe a MyNothing = a
+fromMaybe a (MyJust b) = b
 
 -- | maybeToList
 -- maybeToListはMyMaybeをListに変換する関数です。
@@ -110,7 +115,8 @@ fromMaybe = undefined
 -- >>> maybeToList (MyJust "hello")
 -- ["hello"]
 maybeToList :: MyMaybe a -> [a]
-maybeToList = undefined
+maybeToList MyNothing = []
+maybeToList (MyJust a) = a : []
 
 -- | listToMaybe
 -- listToMaybeはListをMyMaybeをListに変換する関数です。
@@ -125,7 +131,8 @@ maybeToList = undefined
 -- >>> listToMaybe []
 -- MyNothing
 listToMaybe :: [a] -> MyMaybe a
-listToMaybe = undefined
+listToMaybe [] = MyNothing
+listToMaybe (a:_) = MyJust a
 
 -- | catMaybes
 -- catMaybesはMyMaybeのリストを普通のリストに変換する関数です。
@@ -139,7 +146,10 @@ listToMaybe = undefined
 -- >>> catMaybes [MyJust 3, MyNothing, MyJust 1, MyNothing]
 -- [3,1]
 catMaybes :: [MyMaybe a] -> [a]
-catMaybes = undefined
+catMaybes (MyNothing:[]) = []
+catMaybes (MyNothing:xs) = catMaybes xs
+catMaybes ((MyJust a):[]) = a : []
+catMaybes ((MyJust a):xs) = a : catMaybes xs
 
 -- 上級問題用
 instance Functor MyMaybe where
