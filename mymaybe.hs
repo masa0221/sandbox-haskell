@@ -59,7 +59,7 @@ main = undefined -- doctestの実行に必要なだけなので気にしない�
 --
 maybe :: b -> (a -> b) -> MyMaybe a -> b
 maybe b _ (MyNothing) = b
-maybe b f (MyJust a) = f a
+maybe _ f (MyJust a) = f a
 
 -- | isJust
 -- isJustは値がMyJustかどうか確認する関数です。
@@ -73,8 +73,8 @@ maybe b f (MyJust a) = f a
 -- >>> isJust (MyJust ())
 -- True
 isJust :: MyMaybe a -> Bool
-isJust (MyJust _) = True
-isJust _ = False
+isJust MyNothing = False
+isJust _ = True
 
 -- | isNothing
 -- isNothingtは値がMyNothingかどうか確認する関数です。
@@ -88,8 +88,7 @@ isJust _ = False
 -- >>> isNothing (MyJust ())
 -- False
 isNothing :: MyMaybe a -> Bool
-isNothing MyNothing = True
-isNothing _ = False
+isNothing = not . isJust
 
 
 -- | fromMaybe
@@ -109,7 +108,7 @@ isNothing _ = False
 -- 1
 fromMaybe :: a -> MyMaybe a -> a
 fromMaybe a MyNothing = a
-fromMaybe a (MyJust b) = b
+fromMaybe _ (MyJust b) = b
 
 -- | maybeToList
 -- maybeToListはMyMaybeをListに変換する関数です。
@@ -154,10 +153,9 @@ listToMaybe (a:_) = MyJust a
 -- >>> catMaybes [MyJust 3, MyNothing, MyJust 1, MyNothing]
 -- [3,1]
 catMaybes :: [MyMaybe a] -> [a]
-catMaybes (MyNothing:[]) = []
-catMaybes (MyNothing:xs) = catMaybes xs
-catMaybes ((MyJust a):[]) = a : []
-catMaybes ((MyJust a):xs) = a : catMaybes xs
+catMaybes [] = []
+catMaybes ((MyJust a):as) = a : catMaybes as
+catMaybes (MyNothing:as) = catMaybes as
 
 -- 上級問題用
 instance Functor MyMaybe where
@@ -166,13 +164,13 @@ instance Functor MyMaybe where
 
 instance Applicative MyMaybe where
   pure = MyJust
-  (<*>) MyNothing _ = MyNothing
+  MyNothing <*> _ = MyNothing
 -- (<*>) (MyJust f) (MyJust a) = MyJust $ f a
-  (<*>) (MyJust f) a = fmap f a
+  (MyJust f) <*> a = fmap f a
 
 instance Monad MyMaybe where
-  (>>=) MyNothing _ = MyNothing
-  (>>=) (MyJust a) f = f a
+  MyNothing >>= _ = MyNothing
+  (MyJust a) >>= f = f a
   return = pure
 
 -- |
