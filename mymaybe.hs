@@ -153,10 +153,9 @@ listToMaybe (a:_) = MyJust a
 -- >>> catMaybes [MyJust 3, MyNothing, MyJust 1, MyNothing]
 -- [3,1]
 catMaybes :: [MyMaybe a] -> [a]
-catMaybes (MyNothing:[]) = []
-catMaybes (MyNothing:xs) = catMaybes xs
-catMaybes ((MyJust a):[]) = a : []
-catMaybes ((MyJust a):xs) = a : catMaybes xs
+catMaybes [] = []
+catMaybes ((MyJust a):as) = a : catMaybes as
+catMaybes (MyNothing:as) = catMaybes as
 
 -- 上級問題用
 instance Functor MyMaybe where
